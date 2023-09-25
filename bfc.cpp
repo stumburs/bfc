@@ -4,7 +4,7 @@
 #include <cstdlib>
 #include <cstring>
 
-const std::string version = "1.1";
+const std::string version = "1.2";
 
 int main(int argc, char *argv[])
 {
@@ -14,6 +14,7 @@ int main(int argc, char *argv[])
     bool cpp_file_only = false;
     bool show_info = false;
     std::string custom_output_filename;
+    bool verbose_logging = false;
 
     if (argc < 2)
     {
@@ -37,7 +38,8 @@ int main(int argc, char *argv[])
         std::cout << "\t-info\t\tDisplay additional info\n";
         std::cout << "\t-keep\t\tKeeps the intermediary .cpp files after compiling\n";
         std::cout << "\t-o <filename>\tCompile with a specific executable name\n";
-        std::cout << "\t-run\t\tRuns the program after compiling\n\n\n";
+        std::cout << "\t-run\t\tRuns the program after compiling\n\n";
+        std::cout << "\t-v\t\tEnable verbose output, providing detailed compilation progress and diagnostics.\n\n\n";
         return 0;
     }
 
@@ -89,6 +91,9 @@ int main(int argc, char *argv[])
                 return 1;
             }
         }
+
+        if (arg == "-v")
+            verbose_logging = true;
     }
 
     // Create input file
@@ -103,6 +108,19 @@ int main(int argc, char *argv[])
     {
         std::cout << "Failed to open file.\n";
         return 1;
+    }
+
+    // Verbose logging
+    if (verbose_logging)
+    {
+        std::cout << "Args: " << std::endl;
+        for (int i = 0; i < argc; i++)
+            std::cout << "\t[" << i << "] " << argv[i] << std::endl;
+        std::cout << std::endl;
+
+        std::cout << "\tInput file path: " << file_path << std::endl;
+        std::cout << "\tCompiled name: " << compiled_name << std::endl;
+        std::cout << "\tIntermediary file path: " << output_file_path << std::endl;
     }
 
     // Preprocess file to remove non-Brainfuck characters
@@ -187,7 +205,7 @@ int main(int argc, char *argv[])
     output_file.close();
 
     // Show additional info
-    if (show_info)
+    if (show_info || verbose_logging)
     {
         std::cout << "Info:" << std::endl;
         std::cout << "\tCharacter count: " << program.length() << std::endl;
@@ -218,6 +236,13 @@ int main(int argc, char *argv[])
         if (optimize_for_speed)
             compile_command += " -O3";
 
+        if (verbose_logging)
+        {
+            std::cout << "\tCompile command: " << compile_command << std::endl;
+            std::cout << "\tCompiling..." << std::endl;
+            std::cout << std::endl;
+        }
+
         int compile_result = std::system(compile_command.c_str());
 
         if (compile_result == 0)
@@ -234,11 +259,17 @@ int main(int argc, char *argv[])
 
     // Delete intermediary C++ files if set
     if (!keep_intermediary_files)
+    {
+        std::cout << "\tRemoving intermediary file..." << std::endl;
         std::remove(output_file_path.c_str());
+    }
 
     // Run the compiled executable
     if (run_after_compiling)
+    {
+        std::cout << "\tRunning..." << std::endl;
         std::system(compiled_name.c_str());
+    }
 
     return 0;
 }

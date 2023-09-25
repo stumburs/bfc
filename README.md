@@ -16,6 +16,7 @@ To compile a Brainfuck source code file, use the following command:
 -   `-keep`: Keeps the intermediary .cpp files after compiling.
 -   `-o <filename>` Compile with a specific executable name
 -   `-run`: Runs the program after compiling.
+-   `-v`: Enable verbose output, providing detailed compilation progress and diagnostics.
 
 ### Example
 

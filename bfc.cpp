@@ -107,7 +107,8 @@ int main(int argc, char *argv[])
     if (!input_file.is_open())
     {
         std::cout << "Failed to open file.\n";
-        std::remove(file_path.c_str());
+        output_file.close();
+        std::remove(output_file_path.c_str());
         return 1;
     }
 

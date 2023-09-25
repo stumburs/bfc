@@ -260,14 +260,16 @@ int main(int argc, char *argv[])
     // Delete intermediary C++ files if set
     if (!keep_intermediary_files)
     {
-        std::cout << "\tRemoving intermediary file..." << std::endl;
+        if (verbose_logging)
+            std::cout << "\tRemoving intermediary file..." << std::endl;
         std::remove(output_file_path.c_str());
     }
 
     // Run the compiled executable
     if (run_after_compiling)
     {
-        std::cout << "\tRunning..." << std::endl;
+        if (verbose_logging)
+            std::cout << "\tRunning..." << std::endl;
         std::system(compiled_name.c_str());
     }
 

@@ -89,6 +89,7 @@ int main(int argc, char *argv[])
     output_file << "constexpr std::size_t mem_size = 30000;\n";
     output_file << "std::array<uint8_t, mem_size> mem = {0};\n";
     output_file << "uint8_t* ptr = mem.data();\n\n";
+    output_file << "char ch = 0;\n\n";
     output_file << "int main()\n";
     output_file << "{\n";
 
@@ -131,7 +132,8 @@ int main(int argc, char *argv[])
             print_statements++;
             break;
         case ',':
-            output_file << std::string(indent_level, '\t') << "std::cin >> *ptr;\n";
+            output_file << std::string(indent_level, '\t') << "ch = std::cin.get();\n";
+            output_file << std::string(indent_level, '\t') << "*ptr = ch;\n";
             input_statements++;
             break;
         case '[':

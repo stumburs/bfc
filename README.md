@@ -14,6 +14,7 @@ To compile a Brainfuck source code file, use the following command:
 -   `-fast`: Adds the `-O3` optimization parameter to `g++`.
 -   `-info`: Displays additional info about the .bf file.
 -   `-keep`: Keeps the intermediary .cpp files after compiling.
+-   `-o <filename>` Compile with a specific executable name
 -   `-run`: Runs the program after compiling.
 
 ### Example

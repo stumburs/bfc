@@ -18,7 +18,7 @@ To compile a Brainfuck source code file, use the following command:
 
 Compile a Brainfuck file while optimizing for speed, then run the program:
 
-`bfc bf_file.bf -small -run`
+`bfc bf_file.bf -fast -run`
 
 ## Help
 

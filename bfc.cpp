@@ -9,6 +9,7 @@ int main(int argc, char *argv[])
     bool run_after_compiling = false;
     bool keep_intermediary_files = false;
     bool optimize_for_speed = false;
+    bool cpp_file_only = false;
 
     if (argc < 2)
     {
@@ -18,17 +19,19 @@ int main(int argc, char *argv[])
 
     if (std::string(argv[1]) == "--help")
     {
+        std::cout << "Syntax:\n\tbfc <input_file> [options]\n\n";
         std::cout << "Example usage:\n";
-        std::cout << "\tbfc bf_file.bf -small -run\tCompiles \"bf_file.bf\" using the -O3 parameter for g++, then runs the executable.\n\n";
+        std::cout << "\tbfc bf_file.bf -fast -run\tCompiles \"bf_file.bf\" using the -O3 parameter for g++, then runs the executable.\n\n";
         std::cout << "Available commands:\n";
 
         std::cout << "\t--help\t\tDisplays this screen\n";
         std::cout << "\t--version\tDisplays installed version\n\n";
 
         std::cout << "Compile arguments:\n";
-        std::cout << "\t-keep\t\tKeeps the intermediary .cpp files after compiling\n";
-        std::cout << "\t-run\t\tRuns the program after compiling\n";
+        std::cout << "\t-cpp\t\tSkip compiling to executable, instead translate only to a .cpp file\n";
         std::cout << "\t-fast\t\tAdds -O3 parameter to g++\n";
+        std::cout << "\t-keep\t\tKeeps the intermediary .cpp files after compiling\n";
+        std::cout << "\t-run\t\tRuns the program after compiling\n\n\n";
         return 0;
     }
 
@@ -50,6 +53,9 @@ int main(int argc, char *argv[])
 
         if (arg == "-fast")
             optimize_for_speed = true;
+
+        if (arg == "-cpp")
+            cpp_file_only = true;
     }
 
     // Create input file
@@ -123,6 +129,12 @@ int main(int argc, char *argv[])
     // Close main function
     output_file << "}\n";
     output_file.close();
+
+    if (cpp_file_only)
+    {
+        std::cout << "Translating to .cpp successful\n";
+        return 0;
+    }
 
     // Run g++ compiler to compile program
     if (output_file.good())

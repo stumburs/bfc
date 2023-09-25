@@ -29,7 +29,7 @@ To display usage and available options, use the `--help` command:
 
 ## Requirements
 
-- C++ compiler (e.g., g++)
+- g++ compiler
 - GNU C++ Standard Library
 
 ## License

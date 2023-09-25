@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
         std::cout << "Compile arguments:\n";
         std::cout << "\t-cpp\t\tSkip compiling to executable, instead translate only to a .cpp file\n";
         std::cout << "\t-fast\t\tAdds -O3 parameter to g++\n";
-        std::cout << "\t-info\t\tDisplay additional info (buggy)\n";
+        std::cout << "\t-info\t\tDisplay additional info\n";
         std::cout << "\t-keep\t\tKeeps the intermediary .cpp files after compiling\n";
         std::cout << "\t-run\t\tRuns the program after compiling\n\n\n";
         return 0;
@@ -159,7 +159,7 @@ int main(int argc, char *argv[])
     // Show additional info
     if (show_info)
     {
-        std::cout << "Info (buggy):" << std::endl;
+        std::cout << "Info:" << std::endl;
         std::cout << "\tCharacter count: " << program.length() << std::endl;
         std::cout << "\tValue increases: " << value_increases << std::endl;
         std::cout << "\tValue decreases: " << value_decreases << std::endl;

@@ -4,6 +4,8 @@
 #include <cstdlib>
 #include <cstring>
 
+const std::string version = "1.1";
+
 int main(int argc, char *argv[])
 {
     bool run_after_compiling = false;
@@ -11,6 +13,7 @@ int main(int argc, char *argv[])
     bool optimize_for_speed = false;
     bool cpp_file_only = false;
     bool show_info = false;
+    std::string custom_output_filename;
 
     if (argc < 2)
     {
@@ -33,13 +36,14 @@ int main(int argc, char *argv[])
         std::cout << "\t-fast\t\tAdds -O3 parameter to g++\n";
         std::cout << "\t-info\t\tDisplay additional info\n";
         std::cout << "\t-keep\t\tKeeps the intermediary .cpp files after compiling\n";
+        std::cout << "\t-o <filename>\tCompile with a specific executable name\n";
         std::cout << "\t-run\t\tRuns the program after compiling\n\n\n";
         return 0;
     }
 
     if (std::string(argv[1]) == "--version")
     {
-        std::cout << "bfc 1.0\nhttps://github.com/stumburs\n";
+        std::cout << "bfc " + version + "\nhttps://github.com/stumburs\n";
         return 0;
     }
 
@@ -61,6 +65,31 @@ int main(int argc, char *argv[])
 
         if (arg == "-run")
             run_after_compiling = true;
+
+        if (arg == "-o")
+        {
+            // Check for agrument after -o
+            if (argv[i + 1] != 0)
+            {
+                // Check if isn't a compile argument
+                if (argv[i + 1][0] != '-')
+                {
+                    custom_output_filename = argv[i + 1];
+                    i++;
+                }
+                else
+                {
+                    std::cerr << "No output filename provided" << std::endl;
+                    return 1;
+                }
+                std::cout << "YES" << std::endl;
+            }
+            else
+            {
+                std::cerr << "No output filename provided" << std::endl;
+                return 1;
+            }
+        }
     }
 
     // Create input file
@@ -185,7 +214,11 @@ int main(int argc, char *argv[])
     // Run g++ compiler to compile program
     if (output_file.good())
     {
-        std::string compile_command = "g++ " + output_file_path + " -o " + file_name + " -Wall -Wextra -pedantic";
+        std::string compile_command;
+        if (!custom_output_filename.empty())
+            compile_command = "g++ " + output_file_path + " -o " + custom_output_filename + " -Wall -Wextra -pedantic";
+        else
+            compile_command = "g++ " + output_file_path + " -o " + file_name + " -Wall -Wextra -pedantic";
 
         if (optimize_for_speed)
             compile_command += " -O3";
@@ -210,7 +243,12 @@ int main(int argc, char *argv[])
 
     // Run the compiled executable
     if (run_after_compiling)
-        std::system(file_name.c_str());
+    {
+        if (custom_output_filename.empty())
+            std::system(file_name.c_str());
+        else
+            std::system(custom_output_filename.c_str());
+    }
 
     return 0;
 }

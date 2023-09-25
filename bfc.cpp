@@ -94,8 +94,8 @@ int main(int argc, char *argv[])
     // Create input file
     std::string file_path = argv[1];
     std::ifstream input_file(file_path);
-    std::string file_name = file_path.substr(0, file_path.find_last_of('.'));
-    std::string output_file_path = file_name + ".temp.cpp";
+    std::string compiled_name = custom_output_filename.empty() ? file_path.substr(0, file_path.find_last_of('.')) : custom_output_filename;
+    std::string output_file_path = compiled_name + ".temp.cpp";
     std::ofstream output_file(output_file_path);
 
     // Check if file successfully opened
@@ -213,11 +213,7 @@ int main(int argc, char *argv[])
     // Run g++ compiler to compile program
     if (output_file.good())
     {
-        std::string compile_command;
-        if (!custom_output_filename.empty())
-            compile_command = "g++ " + output_file_path + " -o " + custom_output_filename + " -Wall -Wextra -pedantic";
-        else
-            compile_command = "g++ " + output_file_path + " -o " + file_name + " -Wall -Wextra -pedantic";
+        std::string compile_command = "g++ " + output_file_path + " -o " + compiled_name + " -Wall -Wextra -pedantic";
 
         if (optimize_for_speed)
             compile_command += " -O3";
@@ -242,12 +238,7 @@ int main(int argc, char *argv[])
 
     // Run the compiled executable
     if (run_after_compiling)
-    {
-        if (custom_output_filename.empty())
-            std::system(file_name.c_str());
-        else
-            std::system(custom_output_filename.c_str());
-    }
+        std::system(compiled_name.c_str());
 
     return 0;
 }

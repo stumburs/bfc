@@ -38,8 +38,8 @@ int main(int argc, char *argv[])
         std::cout << "\t-info\t\tDisplay additional info\n";
         std::cout << "\t-keep\t\tKeeps the intermediary .cpp files after compiling\n";
         std::cout << "\t-o <filename>\tCompile with a specific executable name\n";
-        std::cout << "\t-run\t\tRuns the program after compiling\n\n";
-        std::cout << "\t-v\t\tEnable verbose output, providing detailed compilation progress and diagnostics.\n\n\n";
+        std::cout << "\t-run\t\tRuns the program after compiling\n";
+        std::cout << "\t-v\t\tEnable verbose output, providing detailed compilation progress and diagnostics.\n\n";
         return 0;
     }
 
@@ -107,6 +107,7 @@ int main(int argc, char *argv[])
     if (!input_file.is_open())
     {
         std::cout << "Failed to open file.\n";
+        std::remove(file_path.c_str());
         return 1;
     }
 

@@ -82,7 +82,6 @@ int main(int argc, char *argv[])
                     std::cerr << "No output filename provided" << std::endl;
                     return 1;
                 }
-                std::cout << "YES" << std::endl;
             }
             else
             {

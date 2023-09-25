@@ -10,6 +10,7 @@ int main(int argc, char *argv[])
     bool keep_intermediary_files = false;
     bool optimize_for_speed = false;
     bool cpp_file_only = false;
+    bool show_info = false;
 
     if (argc < 2)
     {
@@ -30,6 +31,7 @@ int main(int argc, char *argv[])
         std::cout << "Compile arguments:\n";
         std::cout << "\t-cpp\t\tSkip compiling to executable, instead translate only to a .cpp file\n";
         std::cout << "\t-fast\t\tAdds -O3 parameter to g++\n";
+        std::cout << "\t-info\t\tDisplay additional info (buggy)\n";
         std::cout << "\t-keep\t\tKeeps the intermediary .cpp files after compiling\n";
         std::cout << "\t-run\t\tRuns the program after compiling\n\n\n";
         return 0;
@@ -45,17 +47,20 @@ int main(int argc, char *argv[])
     {
         std::string arg = std::string(argv[i]);
 
-        if (arg == "-run")
-            run_after_compiling = true;
-
-        if (arg == "-keep")
-            keep_intermediary_files = true;
+        if (arg == "-cpp")
+            cpp_file_only = true;
 
         if (arg == "-fast")
             optimize_for_speed = true;
 
-        if (arg == "-cpp")
-            cpp_file_only = true;
+        if (arg == "-info")
+            show_info = true;
+
+        if (arg == "-keep")
+            keep_intermediary_files = true;
+
+        if (arg == "-run")
+            run_after_compiling = true;
     }
 
     // Create input file
@@ -87,6 +92,17 @@ int main(int argc, char *argv[])
     output_file << "int main()\n";
     output_file << "{\n";
 
+    // Extra info
+    std::size_t value_increases = 0;
+    std::size_t value_decreases = 0;
+    std::size_t ptr_increases = 0;
+    std::size_t ptr_decreases = 0;
+    std::size_t print_statements = 0;
+    std::size_t input_statements = 0;
+    std::size_t loop_entries = 0;
+    std::size_t loop_exits = 0;
+    std::size_t unknown_characters = 0;
+
     // Transpile program and write to file
     std::size_t i = 0;
     std::size_t indent_level = 1;
@@ -96,31 +112,41 @@ int main(int argc, char *argv[])
         {
         case '>':
             output_file << std::string(indent_level, '\t') << "++ptr;\n";
+            ptr_increases++;
             break;
         case '<':
             output_file << std::string(indent_level, '\t') << "--ptr;\n";
+            ptr_decreases++;
             break;
         case '+':
             output_file << std::string(indent_level, '\t') << "++*ptr;\n";
+            value_increases++;
             break;
         case '-':
             output_file << std::string(indent_level, '\t') << "--*ptr;\n";
+            value_decreases++;
             break;
         case '.':
             output_file << std::string(indent_level, '\t') << "std::cout << *ptr;\n";
+            print_statements++;
             break;
         case ',':
             output_file << std::string(indent_level, '\t') << "std::cin >> *ptr;\n";
+            input_statements++;
             break;
         case '[':
             output_file << std::string(indent_level, '\t') << "while (*ptr != 0)\n"
                         << std::string(indent_level, '\t') << "{\n";
             indent_level++;
+            loop_entries++;
             break;
         case ']':
             indent_level--;
             output_file << std::string(indent_level, '\t') << "}\n";
+            loop_exits++;
+            break;
         default:
+            unknown_characters++;
             break;
         }
         ++i;
@@ -130,6 +156,24 @@ int main(int argc, char *argv[])
     output_file << "}\n";
     output_file.close();
 
+    // Show additional info
+    if (show_info)
+    {
+        std::cout << "Info (buggy):" << std::endl;
+        std::cout << "\tCharacter count: " << program.length() << std::endl;
+        std::cout << "\tValue increases: " << value_increases << std::endl;
+        std::cout << "\tValue decreases: " << value_decreases << std::endl;
+        std::cout << "\tPointer increases: " << ptr_increases << std::endl;
+        std::cout << "\tPointer decreases: " << ptr_decreases << std::endl;
+        std::cout << "\tPrint statements: " << print_statements << std::endl;
+        std::cout << "\tInput statements: " << input_statements << std::endl;
+        std::cout << "\tLoop entries: " << loop_entries << std::endl;
+        std::cout << "\tLoop exits: " << loop_exits << std::endl;
+        std::cout << "\tUnknown characters: " << unknown_characters << std::endl;
+        std::cout << std::endl;
+    }
+
+    // Skip compiling
     if (cpp_file_only)
     {
         std::cout << "Translating to .cpp successful\n";

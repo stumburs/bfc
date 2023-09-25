@@ -10,9 +10,10 @@ To compile a Brainfuck source code file, use the following command:
 
 ### Options
 
-- `-keep`: Keeps the intermediary .cpp files after compiling.
-- `-run`: Runs the program after compiling.
-- `-fast`: Adds the `-O3` optimization parameter to `g++`.
+-   `-cpp`: Skip compiling to executable, instead translate only to a .cpp file.
+-   `-fast`: Adds the `-O3` optimization parameter to `g++`.
+-   `-keep`: Keeps the intermediary .cpp files after compiling.
+-   `-run`: Runs the program after compiling.
 
 ### Example
 
@@ -26,11 +27,10 @@ To display usage and available options, use the `--help` command:
 
 `bfc --help`
 
-
 ## Requirements
 
-- g++ compiler
-- GNU C++ Standard Library
+-   g++ compiler
+-   GNU C++ Standard Library
 
 ## License
 
